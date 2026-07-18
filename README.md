@@ -1,1 +1,1 @@
-# mindcoachuzbot
+# rashms_bot

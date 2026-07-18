@@ -8,6 +8,7 @@ from utils.db_api.admin_db import AdminDB
 from utils.db_api.core import Database
 from utils.db_api.users_db import UsersDB
 from utils.db_api.app_db import AppDB
+from utils.db_api.rash_db import RashDB
 
 bot = Bot(token=config.BOT_TOKEN, parse_mode=types.ParseMode.HTML)
 #storage = RedisStorage2(
@@ -26,3 +27,4 @@ db = Database()
 udb = UsersDB(db)
 adb = AdminDB(db)
 appdb = AppDB(db)
+rdb = RashDB(db)

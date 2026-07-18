@@ -2,7 +2,7 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import CommandStart
 
-from loader import dp, appdb
+from loader import dp, appdb, udb
 from utils.helpers import start_anketa, start_text
 
 
@@ -14,11 +14,19 @@ async def handle_start(message: types.Message, state: FSMContext):
     pupil_tg_id = int(message.from_user.id)
 
     if deep_link:
-        await state.update_data(
-            teacher_tg_id=int(deep_link)
-        )
+        teacher_id = await appdb.check_teacher(tg_id=int(deep_link))
 
-    user = await appdb.check_user(
+        if teacher_id:
+            await state.update_data(
+                teacher_id=teacher_id
+            )
+        else:
+            await message.answer(
+                text="Taklif havolasida xatolik bor! Ustozga murojaat qiling!"
+            )
+            return
+
+    user = await udb.check_user(
         telegram_id=pupil_tg_id
     )
 
