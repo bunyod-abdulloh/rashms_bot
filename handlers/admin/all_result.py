@@ -4,7 +4,7 @@ from magic_filter import F
 
 from filters import IsBotAdminFilter
 from loader import dp, rdb
-from utils.rash.all_result import analyze_results
+from utils.rash.uzbek.analyzer import analyze_results
 
 
 @dp.message_handler(IsBotAdminFilter(), F.text == "Umumiy natija", state="*")

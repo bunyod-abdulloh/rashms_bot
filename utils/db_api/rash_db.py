@@ -57,8 +57,35 @@ class RashDB:
             """
         return await self.db.fetch(sql, test_code_id)
 
+    async def get_essay_ball(self, test_code_id):
+        sql = """
+            SELECT 
+                r.essay_ball,
+                u.telegram_id
+            FROM users u 
+            JOIN rash_results r ON r.pupil_id = u.id 
+            WHERE r.test_id = $1  
+            """
+        return await self.db.fetch(sql, test_code_id)
+
     async def get_results(self, test_code_id):
         sql = """
             SELECT * FROM pupil_testresult WHERE test_code_id = $1
             """
         return await self.db.fetch(sql, test_code_id)
+
+    async def get_results_teacher(self, teacher_id, test_code_id):
+        sql = """
+            SELECT ptr.*
+            FROM pupil_testresult ptr 
+            JOIN users u 
+            ON u.telegram_id = ptr.telegram_id 
+            WHERE u.teacher_id = $1 AND test_code_id = $2            
+            """
+        return await self.db.fetch(sql, teacher_id, test_code_id)
+
+    async def get_test_code(self, test_code_id):
+        sql = """
+            SELECT test_code FROM admin_panel_teststatus WHERE id = $1
+            """
+        return await self.db.fetchval(sql, test_code_id)

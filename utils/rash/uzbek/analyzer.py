@@ -115,7 +115,13 @@ from reportlab.pdfbase import pdfmetrics
 async def generate_test_pdf(results, test_name, test_code):
     # REGISTER FONT
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    FONT_PATH = os.path.join(BASE_DIR, "fonts", "NotoSans-Regular.ttf")
+    FONT_PATH = os.path.join(
+        BASE_DIR,
+        "..",
+        "fonts",
+        "NotoSans-Regular.ttf"
+    )
+    FONT_PATH = os.path.abspath(FONT_PATH)
 
     pdfmetrics.registerFont(TTFont('NotoSans', FONT_PATH))
 
@@ -148,13 +154,12 @@ async def generate_test_pdf(results, test_name, test_code):
         Spacer(1, 12)
     ]
 
-    data = [["T/r", "F.I.SH", "ID", "Test", "Esse", "Umumiy", "Foiz", "Daraja"]]
+    data = [["T/r", "F.I.SH", "Test", "Esse", "Umumiy", "Foiz", "Daraja"]]
 
     for i, r in enumerate(results, start=1):
         data.append([
             str(i),
             r["full_name"],
-            r["id"],
             r["T1"],
             r["T2"],
             str(r["rasch"]),
@@ -188,9 +193,6 @@ async def generate_test_pdf(results, test_name, test_code):
 # 4) ASOSIY FUNKSIYA — SIZGA KERAK BO‘LGAN YAGONA NARSALAR
 # ==============================================================
 async def analyze_results(test_code_id):
-    # for telegram_id, u_fullname in users_dict.items():
-    #     await udb.add_user(telegram_id, u_fullname)
-
     data = await rdb.get_results(test_code_id=test_code_id)
 
     if not data:
@@ -210,74 +212,44 @@ async def analyze_results(test_code_id):
     ques_idx = {q: j for j, q in enumerate(questions)}
 
     # ----------------------------
-    # 2) RASCH MATRIX (1–40)
+    # 2) RASCH MATRIX (1–44)
     # ----------------------------
     X = np.full((U, Q), np.nan)
 
     for d in data:
         q = str(d["question_number"])
-        if q.isdigit() and 1 <= int(q) <= 40:
+        if q:
             i = user_idx[d["telegram_id"]]
             j = ques_idx[q]
             X[i, j] = 1 if d["correct_answer"] else 0
 
     # ----------------------------
-    # 3) BLOKLAR
+    # 3) RASCH SCORE (T1)
     # ----------------------------
-    block1_cols = [j for q, j in ques_idx.items() if str(q).isdigit() and 1 <= int(q) <= 44]
-    block2_keys = [q for q in ques_idx if str(q).startswith(("41.", "42.", "43."))]
-
-    X1 = X[:, block1_cols] if block1_cols else np.full((U, 1), np.nan)
-
-    # ----------------------------
-    # 4) RASCH SCORE (T1)
-    # ----------------------------
-    theta1 = rasch_jmle(X1)
+    theta1 = rasch_jmle(X)
     T1 = to_T(theta1)
-    T1 = np.clip(T1, None, 90)
+    T1 = np.clip(T1, 0, 75)
 
     # ----------------------------
-    # 5) YOZMA BALL MAP
+    # 4) ESSE BALL (T2)
     # ----------------------------
-    test_answers = await rdb.get_test_scores(test_code_id)
+    essay_balls = await rdb.get_essay_ball(test_code_id)
+    score_map = {a["telegram_id"]: float(a["essay_ball"]) for a in essay_balls}
 
-    # {"41.A": 5, "41.B": 5.1, ...}
-    score_map = {
-        a["question_number"]: float(a["score"])
-        for a in test_answers
-    }
+    T2 = np.zeros(U)
+    for uid, i in user_idx.items():
+        T2[i] = score_map.get(uid, 0.0)
 
-    # ----------------------------
-    # 6) FOYDALANUVCHI YOZMA BALLI (T2)
-    # ----------------------------
-    raw_scores = np.zeros(U)
-    max_possible = sum(score_map.get(q, 0) for q in block2_keys)
-    max_possible = max(max_possible, 1)
-
-    for d in data:
-        q = str(d["question_number"])
-        if q in score_map:
-            i = user_idx[d["telegram_id"]]
-            if d["correct_answer"]:
-                raw_scores[i] += score_map[q]
-
-    # 0–75 normalizatsiya
-    T2 = (raw_scores / max_possible) * 75
     T2 = np.clip(T2, 0, 75)
 
     # ----------------------------
-    # 7) FINAL SCORE
+    # 5) FINAL SCORE — ikkala bo'limning arifmetik o'rtachasi (0-75 shkalada)
     # ----------------------------
-    # final = (T1 * 0.7) + (T2 * 0.3)
-    # final = np.round(final, 1)
-
     final = T1 + T2
-    final = np.round(final, 1)
-
     rasch = np.round(final / 2, 1)
 
     # ----------------------------
-    # 8) NATIJALAR
+    # 6) NATIJALAR
     # ----------------------------
     all_users = await udb.get_all_users_dict()
 
@@ -311,8 +283,7 @@ async def analyze_results(test_code_id):
 
         if fullname:
             results.append({
-                "full_name": all_users.get(uid, ""),
-                "tg_id": uid,
+                "full_name": fullname,
                 "T1": round(float(T1[i]), 1),
                 "T2": round(float(T2[i]), 1),
                 "rasch": score,
@@ -323,13 +294,13 @@ async def analyze_results(test_code_id):
     results = sorted(results, key=lambda x: x["full_name"] or "")
 
     # ----------------------------
-    # 9) PDF
+    # 7) PDF
     # ----------------------------
-    test_code = await rdb.get_test_code(test_code=test_code_id)
+    test_code = await rdb.get_test_code(test_code_id=test_code_id)
     pdf_path = await generate_test_pdf(results, test_name="Test", test_code=test_code)
 
     # ----------------------------
-    # 10) ADMIN
+    # 8) ADMIN
     # ----------------------------
     caption_text = (
         f"🏁 Test yakunlandi!\n\n"
@@ -352,11 +323,11 @@ async def analyze_results(test_code_id):
             document=InputFile(pdf_path),
             caption=caption_text
         )
-        await bot.send_document(
-            chat_id=ADMINS[1],
-            document=InputFile(pdf_path),
-            caption=caption_text
-        )
+        # await bot.send_document(
+        #     chat_id=ADMINS[1],
+        #     document=InputFile(pdf_path),
+        #     caption=caption_text
+        # )
         os.remove(pdf_path)
     except Exception as err:
         await bot.send_message(chat_id=ADMINS[0], text=f"PDF yuborishda xatolik:\n{err}")
