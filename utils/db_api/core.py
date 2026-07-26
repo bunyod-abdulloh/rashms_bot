@@ -1,7 +1,7 @@
 from typing import Iterable, Sequence, Union
 
 import asyncpg
-from asyncpg import Connection, Pool
+from asyncpg import Pool
 
 from data import config
 
@@ -43,27 +43,14 @@ class Database:
             self,
             table_name: str,
             columns: list[str],
-            records: Iterable[tuple],
+            records: Iterable[dict],
             chunk_size: int = 10_000,
     ):
-        """
-        PostgreSQL COPY.
-
-        Juda katta hajmdagi ma'lumotlarni tez insert qilish uchun.
-
-        Args:
-            table_name: Jadval nomi.
-            columns: Ustunlar.
-            records: tuple lar iterable'i.
-            chunk_size: Har safar COPY qilinadigan yozuvlar soni.
-        """
         async with self.pool.acquire() as connection:
-            connection: Connection
-
             batch = []
 
             for row in records:
-                batch.append(row)
+                batch.append(tuple(row.get(col) for col in columns))
 
                 if len(batch) >= chunk_size:
                     await connection.copy_records_to_table(
@@ -99,13 +86,22 @@ class Database:
             );
             """,
             """
+            CREATE TABLE IF NOT EXISTS rasch_tmp(            
+                id SERIAL PRIMARY KEY,
+                pupil_id INTEGER NOT NULL,
+                test_id INTEGER NOT NULL,
+                essay_ball FLOAT NULL,
+                UNIQUE(pupil_id, test_id)
+            );
+            """,
+            """
             CREATE TABLE IF NOT EXISTS rash_results (
                 id SERIAL PRIMARY KEY,
                 pupil_id INTEGER NOT NULL,
                 test_id INTEGER NOT NULL,
-                test_ball FLOAT NULL,
-                essay_ball FLOAT NULL,
-                rash_ball FLOAT NULL,
+                T1 FLOAT NULL,
+                T2 FLOAT NULL,
+                rasch FLOAT NULL,
                 percent INTEGER NOT NULL DEFAULT 0,
                 grade VARCHAR(5) NULL,
                 UNIQUE(pupil_id, test_id)

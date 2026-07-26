@@ -160,8 +160,8 @@ async def generate_test_pdf(results, test_name, test_code):
         data.append([
             str(i),
             r["full_name"],
-            r["T1"],
-            r["T2"],
+            r["t1"],
+            r["t2"],
             str(r["rasch"]),
             f"{r['percent']} %",
             r["grade"],
@@ -224,28 +224,28 @@ async def analyze_results(test_code_id):
             X[i, j] = 1 if d["correct_answer"] else 0
 
     # ----------------------------
-    # 3) RASCH SCORE (T1)
+    # 3) RASCH SCORE (t1)
     # ----------------------------
     theta1 = rasch_jmle(X)
-    T1 = to_T(theta1)
-    T1 = np.clip(T1, 0, 75)
+    t1 = to_T(theta1)
+    t1 = np.clip(t1, 0, 75)
 
     # ----------------------------
-    # 4) ESSE BALL (T2)
+    # 4) ESSE BALL (t2)
     # ----------------------------
     essay_balls = await rdb.get_essay_ball(test_code_id)
-    score_map = {a["telegram_id"]: float(a["essay_ball"]) for a in essay_balls}
+    score_map = {a["telegram_id"]: float(a["t2"]) for a in essay_balls}
 
-    T2 = np.zeros(U)
+    t2 = np.zeros(U)
     for uid, i in user_idx.items():
-        T2[i] = score_map.get(uid, 0.0)
+        t2[i] = score_map.get(uid, 0.0)
 
-    T2 = np.clip(T2, 0, 75)
+    t2 = np.clip(t2, 0, 75)
 
     # ----------------------------
     # 5) FINAL SCORE — ikkala bo'limning arifmetik o'rtachasi (0-75 shkalada)
     # ----------------------------
-    final = T1 + T2
+    final = t1 + t2
     rasch = np.round(final / 2, 1)
 
     # ----------------------------
@@ -254,8 +254,8 @@ async def analyze_results(test_code_id):
     all_users = await udb.get_all_users_dict()
 
     grade_counts = {
-        "A_PLUS": 0, "A": 0, "B_PLUS": 0, "B": 0,
-        "C_PLUS": 0, "C": 0, "NOT_RANKED": 0,
+        "A+": 0, "A": 0, "B+": 0, "B": 0,
+        "C+": 0, "C": 0, "Olmaganlar": 0,
     }
 
     results = []
@@ -265,33 +265,39 @@ async def analyze_results(test_code_id):
         grade = calc_grade(score)
 
         if grade == "A+":
-            grade_counts["A_PLUS"] += 1
+            grade_counts["A+"] += 1
         elif grade == "A":
             grade_counts["A"] += 1
         elif grade == "B+":
-            grade_counts["B_PLUS"] += 1
+            grade_counts["B+"] += 1
         elif grade == "B":
             grade_counts["B"] += 1
         elif grade == "C+":
-            grade_counts["C_PLUS"] += 1
+            grade_counts["C+"] += 1
         elif grade == "C":
             grade_counts["C"] += 1
         else:
-            grade_counts["NOT_RANKED"] += 1
+            grade_counts["Olmaganlar"] += 1
 
-        fullname = all_users.get(uid, None)
+        fullname = all_users.get(uid, None)[0]
+        pupil_id = all_users.get(uid, None)[1]
 
         if fullname:
             results.append({
+                "test_id": test_code_id,
+                "pupil_id": pupil_id,
                 "full_name": fullname,
-                "T1": round(float(T1[i]), 1),
-                "T2": round(float(T2[i]), 1),
+                "t1": round(float(t1[i]), 1),
+                "t2": round(float(t2[i]), 1),
                 "rasch": score,
                 "percent": calc_percent(score),
                 "grade": grade,
             })
 
     results = sorted(results, key=lambda x: x["full_name"] or "")
+
+    print(results)
+    await rdb.bulk_add_rash_results(results)
 
     # ----------------------------
     # 7) PDF
@@ -308,13 +314,13 @@ async def analyze_results(test_code_id):
         f"❓ Savollar soni: {Q}\n"
         f"👥 Qatnashuvchilar: {len(results)} ta\n\n"
         f"📊 Darajalar:\n\n"
-        f"🏆 A+ — {grade_counts['A_PLUS']}\n"
+        f"🏆 A+ — {grade_counts['A+']}\n"
         f"🥇 A  — {grade_counts['A']}\n"
-        f"🥈 B+ — {grade_counts['B_PLUS']}\n"
+        f"🥈 B+ — {grade_counts['B+']}\n"
         f"🥉 B  — {grade_counts['B']}\n"
-        f"🎓 C+ — {grade_counts['C_PLUS']}\n"
+        f"🎓 C+ — {grade_counts['C+']}\n"
         f"📘 C  — {grade_counts['C']}\n"
-        f"❌ Olmaganlar — {grade_counts['NOT_RANKED']}\n\n"
+        f"❌ Olmaganlar — {grade_counts['Olmaganlar']}\n\n"
     )
 
     try:

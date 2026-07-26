@@ -28,3 +28,4 @@ async def h_all_results_process(message: types.Message, state: FSMContext):
     test_code_id = int(message.text)
 
     await analyze_results(test_code_id)
+    await state.finish()

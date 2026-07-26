@@ -12,7 +12,6 @@ class RashDB:
                 pupil_id,
                 test_id,
                 test_ball,
-                essay_ball,
                 rash_ball,
                 percent,
                 grade,
@@ -24,11 +23,11 @@ class RashDB:
         await self.db.copy_records(
             table_name="rash_results",
             columns=[
-                "pupil_id",
                 "test_id",
-                "test_ball",
-                "essay_ball",
-                "rash_ball",
+                "pupil_id",
+                "t1",
+                "t2",
+                "rasch",
                 "percent",
                 "grade",
             ],
@@ -60,7 +59,7 @@ class RashDB:
     async def get_essay_ball(self, test_code_id):
         sql = """
             SELECT 
-                r.essay_ball,
+                r.T2,
                 u.telegram_id
             FROM users u 
             JOIN rash_results r ON r.pupil_id = u.id 
