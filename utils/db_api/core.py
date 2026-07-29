@@ -39,6 +39,29 @@ class Database:
         async with self.pool.acquire() as connection:
             return await connection.fetchval(command, *args)
 
+    async def bulk_upsert_ignore(
+            self,
+            table_name: str,
+            columns: list[str],
+            conflict_columns: list[str],
+            records: Iterable[tuple],
+    ):
+        """
+        Ommaviy INSERT, duplicate (conflict_columns bo'yicha) uchrasa — pass qilinadi.
+        """
+        cols_str = ", ".join(columns)
+        placeholders = ", ".join(f"${i + 1}" for i in range(len(columns)))
+        conflict_str = ", ".join(conflict_columns)
+
+        query = f"""
+            INSERT INTO {table_name} ({cols_str})
+            VALUES ({placeholders})
+            ON CONFLICT ({conflict_str}) DO NOTHING
+        """
+
+        async with self.pool.acquire() as connection:
+            await connection.executemany(query, records)
+
     async def copy_records(
             self,
             table_name: str,
@@ -99,8 +122,8 @@ class Database:
                 id SERIAL PRIMARY KEY,
                 pupil_id INTEGER NOT NULL,
                 test_id INTEGER NOT NULL,
-                T1 FLOAT NULL,
-                T2 FLOAT NULL,
+                t1 FLOAT NULL,
+                t2 FLOAT NULL,
                 rasch FLOAT NULL,
                 percent INTEGER NOT NULL DEFAULT 0,
                 grade VARCHAR(5) NULL,

@@ -234,7 +234,7 @@ async def analyze_results(test_code_id):
     # 4) ESSE BALL (t2)
     # ----------------------------
     essay_balls = await rdb.get_essay_ball(test_code_id)
-    score_map = {a["telegram_id"]: float(a["t2"]) for a in essay_balls}
+    score_map = {a["telegram_id"]: float(a["essay_ball"]) for a in essay_balls}
 
     t2 = np.zeros(U)
     for uid, i in user_idx.items():
@@ -296,7 +296,6 @@ async def analyze_results(test_code_id):
 
     results = sorted(results, key=lambda x: x["full_name"] or "")
 
-    print(results)
     await rdb.bulk_add_rash_results(results)
 
     # ----------------------------
