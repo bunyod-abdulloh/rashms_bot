@@ -26,6 +26,7 @@ class TeachersDB:
     async def get_teacher_tests(self, teacher_telegram_id: int):
         sql = """
             SELECT DISTINCT ON (ts.test_code) 
+                ts.id,
                 ts.test_code,
                 rr.created_at 
             FROM admin_panel_teststatus ts 

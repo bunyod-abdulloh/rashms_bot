@@ -2,6 +2,7 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from magic_filter import F
 
+from keyboards.inline.teachers import tch_tests_keyboard
 from loader import dp, tchdb
 
 
@@ -19,5 +20,7 @@ async def h_tch_results_start(call: types.CallbackQuery, state: FSMContext):
     await call.message.edit_text(
         text=f"{txt}\n"
              f"Kerakli testni tanlang",
-        reply_markup=None
+        reply_markup=tch_tests_keyboard(
+            tests=tests
+        )
     )
