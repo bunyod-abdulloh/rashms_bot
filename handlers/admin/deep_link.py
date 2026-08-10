@@ -3,14 +3,14 @@ from aiogram.dispatcher import FSMContext
 from magic_filter import F
 
 from data.config import ADMINS
-from loader import dp, appdb, bot
+from loader import dp, bot, tchdb
 
 
 @dp.message_handler(F.text == "Deep Link", state="*", user_id=ADMINS[0])
 async def hdeep_link_start(message: types.Message, state: FSMContext):
     await state.finish()
 
-    teachers = await appdb.get_teachers()
+    teachers = await tchdb.get_teachers()
 
     text = str()
 
@@ -30,7 +30,7 @@ async def hdeep_link_start(message: types.Message, state: FSMContext):
 async def hdeep_link_process(message: types.Message, state: FSMContext):
     teacher_id = int(message.text)
 
-    teacher = await appdb.get_teacher_by_id(
+    teacher = await tchdb.get_teacher_by_id(
         teacher_id=teacher_id
     )
 

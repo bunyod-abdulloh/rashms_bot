@@ -2,7 +2,7 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import CommandStart
 
-from loader import dp, appdb, udb
+from loader import dp, udb, tchdb
 from utils.helpers import start_anketa, start_text
 
 
@@ -14,7 +14,7 @@ async def handle_start(message: types.Message, state: FSMContext):
     pupil_tg_id = int(message.from_user.id)
 
     if deep_link:
-        teacher_id = await appdb.check_teacher(tg_id=int(deep_link))
+        teacher_id = await tchdb.check_teacher(tg_id=int(deep_link))
 
         if teacher_id:
             await state.update_data(

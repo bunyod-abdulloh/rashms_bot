@@ -63,11 +63,46 @@ class RashDB:
         """
         return await self.db.fetch(sql)
 
+    async def get_teachers_test(self):
+        sql = """
+            SELECT DISTINCT
+                ts.id,            
+                ts.subject,
+                ts.test_code 
+            FROM rash_results rr 
+            JOIN admin_panel_teststatus ts ON rr.test_id = ts.id 
+            JOIN admin_panel_user au ON au.id = rr.teacher_id            
+            WHERE au.role = 'teacher' 
+            ORDER BY ts.id DESC;
+        """
+        return await self.db.fetch(sql)
+
+    async def get_teachers_rr(self, test_id):
+        """
+        RASH_RESULTS jadvalidan o'qituvchilarni saralab oluvchi funksiya
+        """
+        sql = """
+            SELECT
+                rr.test_id,
+                ts.test_code,
+                au.id AS teacher_id,                
+                au.telegram_id,
+                au.first_name,
+                au.last_name 
+            FROM admin_panel_teststatus ts 
+            JOIN rash_results rr ON rr.test_id = ts.id 
+            JOIN admin_panel_user au ON au.id = rr.teacher_id            
+            WHERE ts.id = $1 AND au.role = 'teacher' 
+            ORDER BY ts.id DESC;
+        """
+        return await self.db.fetch(sql, test_id)
+
     async def get_subject(self, test_code_id):
         sql = """
             SELECT subject FROM admin_panel_teststatus WHERE id = $1
             """
         return await self.db.fetch(sql, test_code_id)
+
 
     async def get_essay_ball(self, test_code_id):
         sql = """

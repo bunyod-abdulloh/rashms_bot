@@ -111,6 +111,7 @@ class Database:
             """
             CREATE TABLE IF NOT EXISTS rasch_tmp(            
                 id SERIAL PRIMARY KEY,
+                teacher_id INTEGER NULL,
                 pupil_id INTEGER NOT NULL,
                 test_id INTEGER NOT NULL,
                 essay_ball FLOAT NULL,
@@ -120,6 +121,7 @@ class Database:
             """
             CREATE TABLE IF NOT EXISTS rash_results (
                 id SERIAL PRIMARY KEY,
+                teacher_id INTEGER NULL,
                 pupil_id INTEGER NOT NULL,
                 test_id INTEGER NOT NULL,
                 t1 FLOAT NULL,
@@ -127,6 +129,7 @@ class Database:
                 rasch FLOAT NULL,
                 percent INTEGER NOT NULL DEFAULT 0,
                 grade VARCHAR(5) NULL,
+                created_at DATE NOT NULL DEFAULT NOW(),                
                 UNIQUE(pupil_id, test_id)
             )
             """
