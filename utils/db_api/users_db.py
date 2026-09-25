@@ -40,6 +40,6 @@ class UsersDB:
         await self.db.execute("DROP TABLE users")
 
     async def get_all_users_dict(self):
-        sql = "SELECT id, telegram_id, full_name FROM users"
+        sql = "SELECT id, telegram_id, full_name, teacher_id FROM users"
         records = await self.db.fetch(sql)
-        return {row["telegram_id"]: [row["full_name"], row['id']] for row in records}
+        return {row["telegram_id"]: [row["full_name"], row['id'], row['teacher_id']] for row in records}

@@ -19,7 +19,7 @@ def tch_main_ikb():
     return kb
 
 
-ITEMS_PER_PAGE = 10
+ITEMS_PER_PAGE = 1
 
 
 def tch_tests_keyboard(tests, page=1):
@@ -42,35 +42,32 @@ def tch_tests_keyboard(tests, page=1):
 
     nav = []
 
-    if page == 1:
+    if page > 1:
         nav.append(
-            InlineKeyboardButton(
-                text="⬅️ Ortga",
-                callback_data="tch_back"
-            )
-        )
-    else:
-        if page > 1:
-            nav.append(
-                InlineKeyboardButton("⬅️", callback_data=tch_tests_cb.new(
-                    action="prev", value=page - 1
-                ))  # f"page:{page-1}"
-            )
-
-        nav.append(
-            InlineKeyboardButton(
-                f"{page}/{total_pages}",
-                callback_data="ignore"
-            )
+            InlineKeyboardButton("⬅️", callback_data=tch_tests_cb.new(
+                action="prev", value=page - 1
+            ))  # f"page:{page-1}"
         )
 
-        if page < total_pages:
-            nav.append(
-                InlineKeyboardButton("➡️", callback_data=tch_tests_cb.new(
-                    action="next", value=page + 1
-                ))  # f"page:{page+1}"
-            )
+    nav.append(
+        InlineKeyboardButton(
+            f"{page}/{total_pages}",
+            callback_data="ignore"
+        )
+    )
+
+    if page < total_pages:
+        nav.append(
+            InlineKeyboardButton("➡️", callback_data=tch_tests_cb.new(
+                action="next", value=page + 1
+            ))  # f"page:{page+1}"
+        )
 
     keyboard.row(*nav)
-
+    keyboard.add([
+        InlineKeyboardButton(
+            text="⬅️ Ortga",
+            callback_data="tch_back"
+        )
+    ])
     return keyboard

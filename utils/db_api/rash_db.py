@@ -6,7 +6,7 @@ class RashDB:
         self.db = db
 
     async def bulk_add_rash_results(self, results: list[dict]):
-        columns = ["test_id", "pupil_id", "t1", "t2", "rasch", "percent", "grade"]
+        columns = ["test_id", "teacher_id", "pupil_id", "t1", "t2", "rasch", "percent", "grade"]
 
         # dict -> tuple, aynan columns tartibida
         records = [tuple(row[col] for col in columns) for row in results]
@@ -63,18 +63,40 @@ class RashDB:
         """
         return await self.db.fetch(sql)
 
+    async def sample_teach(self):
+        sql = """
+              SELECT                  
+                  rr.test_id AS test_id, 
+                  ts.subject AS subject,
+                  ts.test_code AS test_name
+              FROM admin_panel_user au
+                       JOIN rash_results rr ON rr.teacher_id = au.id 
+                       JOIN admin_panel_teststatus ts ON ts.id = rr.test_id
+              WHERE au.id = rr.teacher_id
+              """
+        return await self.db.fetch(sql)
+
     async def get_teachers_test(self):
         sql = """
-            SELECT DISTINCT
-                ts.id,            
-                ts.subject,
-                ts.test_code 
-            FROM rash_results rr 
-            JOIN admin_panel_teststatus ts ON rr.test_id = ts.id 
-            JOIN admin_panel_user au ON au.id = rr.teacher_id            
-            WHERE au.role = 'teacher' 
-            ORDER BY ts.id DESC;
-        """
+              SELECT au.id         AS teacher_id, \
+                     au.first_name AS teacher_first_name, \
+                     au.last_name  AS teacher_last_name,
+                     ts.id         AS test_id, \
+                     ts.subject, \
+                     ts.test_code
+              FROM rash_results rr
+                       JOIN admin_panel_teststatus ts
+                            ON rr.test_id = ts.id
+                       JOIN admin_panel_user au
+                            ON au.id = rr.teacher_id
+              WHERE au.id = rr.teacher_id
+              GROUP BY au.id, \
+                       au.first_name, \
+                       ts.id, \
+                       ts.subject, \
+                       ts.test_code
+              ORDER BY au.id, ts.id DESC; \
+              """
         return await self.db.fetch(sql)
 
     async def get_teachers_rr(self, test_id):

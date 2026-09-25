@@ -87,12 +87,13 @@ def to_T(theta):
 # ==============================================================
 def calc_percent(score):
     if score < 46:  return "--"
-    if score >= 70: return 100
-    if score >= 65: return round(score / 69.9 * 100, 1)
-    if score >= 60: return round(score / 64.9 * 100, 1)
-    if score >= 55: return round(score / 59.9 * 100, 1)
-    if score >= 50: return round(score / 54.9 * 100, 1)
-    if score >= 46: return round(score / 49.9 * 100, 1)
+    if score >= 70: return str(100)
+    if score >= 65: return str(round(score / 69.9 * 100, 1))
+    if score >= 60: return str(round(score / 64.9 * 100, 1))
+    if score >= 55: return str(round(score / 59.9 * 100, 1))
+    if score >= 50: return str(round(score / 54.9 * 100, 1))
+    if score >= 46: return str(round(score / 49.9 * 100, 1))
+    return None
 
 
 def calc_grade(score):
@@ -281,19 +282,21 @@ async def analyze_results(test_code_id):
 
         fullname = all_users.get(uid, None)[0]
         pupil_id = all_users.get(uid, None)[1]
+        teacher_id = all_users.get(uid, None)[2]
 
         if fullname:
             results.append({
                 "test_id": test_code_id,
                 "pupil_id": pupil_id,
                 "full_name": fullname,
+                "teacher_id": teacher_id,
                 "t1": round(float(t1[i]), 1),
                 "t2": round(float(t2[i]), 1),
                 "rasch": score,
                 "percent": calc_percent(score),
                 "grade": grade,
             })
-
+    print(results)
     results = sorted(results, key=lambda x: x["full_name"] or "")
 
     await rdb.bulk_add_rash_results(results)

@@ -13,10 +13,11 @@ async def hteacher_results(message: types.Message, state: FSMContext):
     await state.finish()
     test_str = str()
 
-    tests = await rdb.get_teachers_test()
+    # tests = await rdb.get_teachers_test()
+    tests = await rdb.sample_teach()
 
     for t in tests:
-        test_str += f"ID: {t['id']} SUBJECT: {t['subject']} TEST_CODE: {t['test_code']}\n"
+        test_str += f"ID: {t['test_id']} SUBJECT: {t['subject']} TEST_NAME: {t['test_name']}\n"
 
     await message.answer(
         text=f"Kerakli test ID raqamini kiriting\n\n"
