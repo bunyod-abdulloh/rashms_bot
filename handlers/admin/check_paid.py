@@ -11,7 +11,7 @@ async def h_check_adm_paid(call: CallbackQuery, state: FSMContext, callback_data
 
     tg_id = callback_data.get("value")
 
-    await udb.set_paid_true(tg_id=tg_id)
+    await udb.set_paid_true(tg_id=int(tg_id))
 
     await call.message.delete()
     await call.message.answer(
@@ -36,7 +36,7 @@ async def h_check_cancel_start(call: CallbackQuery, state: FSMContext, callback_
 
     tg_id = callback_data.get("value")
 
-    await state.update_data(telegram_id=tg_id)
+    await state.update_data(telegram_id=int(tg_id))
 
     await call.message.delete()
     await call.message.answer(
