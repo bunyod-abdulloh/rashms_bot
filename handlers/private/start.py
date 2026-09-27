@@ -21,7 +21,6 @@ async def handle_start(message: types.Message, state: FSMContext):
             teacher_id = await tchdb.get_teacher_by_tg_id(
                 teacher_tg_id=int(deep_link)
             )
-            print(f"BU TEACHER ID: {teacher_id}")
             await state.update_data(
                 teacher_id=teacher_id
             )
