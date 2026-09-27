@@ -13,7 +13,8 @@ async def h_check_adm_paid(call: CallbackQuery, state: FSMContext, callback_data
 
     await udb.set_paid_true(tg_id=tg_id)
 
-    await call.message.edit_text(
+    await call.message.delete()
+    await call.message.answer(
         text=f"<code>{tg_id}</code>\n\n"
              f"Foydalanuvchiga test yoqildi!"
     )
@@ -37,7 +38,8 @@ async def h_check_cancel_start(call: CallbackQuery, state: FSMContext, callback_
 
     await state.update_data(telegram_id=tg_id)
 
-    await call.message.edit_text(
+    await call.message.delete()
+    await call.message.answer(
         text="Rad etilishi sababini kiriting"
     )
     await state.set_state("cancel_check_paid")
