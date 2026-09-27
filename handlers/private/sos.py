@@ -1,0 +1,44 @@
+from aiogram import types
+from aiogram.dispatcher import FSMContext
+
+from data.config import ADMINS
+from keyboards.inline.admin import user_sos_ikb
+from loader import dp, bot
+
+
+@dp.callback_query_handler(F.data == "sos", state="*")
+async def h_sos_start(call: types.CallbackQuery, state: FSMContext):
+    await state.finish()
+    await call.message.edit_text(
+        text="Matnli yoki rasm shaklida savollaringizni yuborishingiz mumkin! Rasmga qo'shimcha matnli savolingiz "
+             "bo'lsa rasm bilan qo'shib yuboring. \n\nSavolingizni yuboring"
+    )
+    await state.set_state("sos-user")
+
+
+@dp.message_handler(state="sos-user", content_types=["text", "photo"])
+async def h_sos_process(message: types.Message, state: FSMContext):
+    telegram_id = message.from_user.id
+
+    if message.content_type == "photo":
+        await bot.send_photo(
+            chat_id=ADMINS[0],
+            photo=message.photo[-1].file_id,
+            caption=message.caption,
+            reply_markup=user_sos_ikb(
+                telegram_id=telegram_id
+            )
+        )
+    elif message.content_type == "text":
+        await bot.send_message(
+            chat_id=ADMINS[0],
+            text=message.text
+        )
+
+    await message.answer(
+        text="Xabaringiz adminga yuborildi! Tez orada javob qaytarishga harakat qilamiz!",
+        reply_markup=user_sos_ikb(
+            telegram_id=telegram_id
+        )
+    )
+    await state.finish()

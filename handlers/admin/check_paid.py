@@ -2,6 +2,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, Message
 
 from keyboards.inline.callbacks import adm_check_paid_cb
+from keyboards.inline.user import user_main_ikb
 from loader import dp, udb, bot
 
 
@@ -22,7 +23,8 @@ async def h_check_adm_paid(call: CallbackQuery, state: FSMContext, callback_data
     try:
         await bot.send_message(
             chat_id=tg_id,
-            text="To'lovingiz tasdiqlandi! Test javoblarini kiritishingiz mumkin!"
+            text="To'lovingiz tasdiqlandi! Test javoblarini kiritishingiz mumkin!",
+            reply_markup=user_main_ikb()
         )
     except Exception as e:
         await call.message.answer(

@@ -14,6 +14,10 @@ def user_main_ikb():
         InlineKeyboardButton(
             text="💰 To'lov",
             callback_data="paid"
+        ),
+        InlineKeyboardButton(
+            text="✍️ Adminga murojaat",
+            callback_data="sos"
         )
     )
     return kb

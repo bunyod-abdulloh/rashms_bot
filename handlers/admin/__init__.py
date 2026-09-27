@@ -1,3 +1,4 @@
+from . import adm_sos
 from . import admin_page_main
 from . import all_result
 from . import check_paid
