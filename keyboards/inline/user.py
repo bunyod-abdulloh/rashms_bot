@@ -8,7 +8,7 @@ def user_main_ikb():
     url = f"{APP_URL}/pupil/home/"
     kb.add(
         InlineKeyboardButton(
-            text="🛍 Test ishlash",
+            text="🚀 Test ishlash",
             web_app=WebAppInfo(url=url)
         )
     )
