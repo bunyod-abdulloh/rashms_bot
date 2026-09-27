@@ -8,6 +8,10 @@ def user_main_ikb():
     url = f"{APP_URL}/pupil/home/"
     kb.add(
         InlineKeyboardButton(
+            text="📋 Qoidalar",
+            callback_data="rules"
+        ),
+        InlineKeyboardButton(
             text="🚀 Test ishlash",
             web_app=WebAppInfo(url=url)
         ),
@@ -30,6 +34,17 @@ def send_check_img():
             text="✈️ Chekni yuborish",
             callback_data="check_money"
         ),
+        InlineKeyboardButton(
+            text="⬅️ Ortga",
+            callback_data="back_main"
+        )
+    )
+    return kb
+
+
+def back_ikb():
+    kb = InlineKeyboardMarkup(row_width=1)
+    kb.add(
         InlineKeyboardButton(
             text="⬅️ Ortga",
             callback_data="back_main"

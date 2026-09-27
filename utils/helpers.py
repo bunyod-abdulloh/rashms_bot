@@ -35,6 +35,7 @@ async def start_text(message: types.Message):
              "📊 <b>Natijalarni nazorat qiling</b>\n"
              "O‘quvchingiz darajasini ko‘rib, uning bilimini tahlil qilishingiz mumkin.\n\n"
              "📖 <b>Maqsadimiz — tayyorgarlikni qulaylashtirish.</b>\n\n"
-             "Testni boshlash uchun quyidagi menyudan foydalaning 👇",
+             "Testni boshlash uchun quyidagi menyudan foydalaning 👇\n"
+             "(natijalar to'g'ri chiqishi uchun Qoidalarni o'qib chiqishingizni tavsiya qilamiz!)",
         reply_markup=user_main_ikb()
     )
