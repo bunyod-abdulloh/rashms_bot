@@ -1,5 +1,6 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
+from magic_filter import F
 
 from data.config import ADMINS
 from keyboards.inline.admin import user_sos_ikb
