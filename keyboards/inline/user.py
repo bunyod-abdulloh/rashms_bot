@@ -4,7 +4,7 @@ from data.config import APP_URL
 
 
 def user_main_ikb():
-    kb = InlineKeyboardMarkup()
+    kb = InlineKeyboardMarkup(row_width=1)
     url = f"{APP_URL}/pupil/home/"
     kb.add(
         InlineKeyboardButton(
@@ -20,7 +20,7 @@ def user_main_ikb():
 
 
 def send_check_img():
-    kb = InlineKeyboardMarkup()
+    kb = InlineKeyboardMarkup(row_width=1)
     kb.add(
         InlineKeyboardButton(
             text="✈️ Chekni yuborish",
