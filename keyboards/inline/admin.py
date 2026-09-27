@@ -16,7 +16,7 @@ def check_paid_ikb(telegram_id):
         InlineKeyboardButton(
             text="Check",
             callback_data=adm_check_paid_cb.new(
-                action="check", value=telegram_id
+                action="check_paid", value=telegram_id
             )
         )
     )
