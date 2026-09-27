@@ -47,7 +47,7 @@ class UsersDB:
     async def set_paid_true(self, tg_id):
         sql = """
               UPDATE users
-              SET paid = TRUE
+              SET is_paid = TRUE
               WHERE telegram_id = $1 \
               """
         await self.db.execute(sql, tg_id)
@@ -55,7 +55,7 @@ class UsersDB:
     async def set_paid_false(self, tg_id):
         sql = """
               UPDATE users
-              SET paid = FALSE
+              SET is_paid = FALSE
               WHERE telegram_id = $1 \
               """
         await self.db.execute(sql, tg_id)
