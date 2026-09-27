@@ -10,6 +10,25 @@ def user_main_ikb():
         InlineKeyboardButton(
             text="🚀 Test ishlash",
             web_app=WebAppInfo(url=url)
+        ),
+        InlineKeyboardButton(
+            text="💰 To'lov",
+            callback_data="paid"
+        )
+    )
+    return kb
+
+
+def send_check_img():
+    kb = InlineKeyboardMarkup()
+    kb.add(
+        InlineKeyboardButton(
+            text="✈️ Chekni yuborish",
+            callback_data="check_money"
+        ),
+        InlineKeyboardButton(
+            text="⬅️ Ortga",
+            callback_data="back_main"
         )
     )
     return kb

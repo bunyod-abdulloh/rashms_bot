@@ -43,3 +43,19 @@ class UsersDB:
         sql = "SELECT id, telegram_id, full_name, teacher_id FROM users"
         records = await self.db.fetch(sql)
         return {row["telegram_id"]: [row["full_name"], row['id'], row['teacher_id']] for row in records}
+
+    async def set_paid_true(self, tg_id):
+        sql = """
+              UPDATE users
+              SET paid = TRUE
+              WHERE telegram_id = $1 \
+              """
+        await self.db.execute(sql, tg_id)
+
+    async def set_paid_false(self, tg_id):
+        sql = """
+              UPDATE users
+              SET paid = FALSE
+              WHERE telegram_id = $1 \
+              """
+        await self.db.execute(sql, tg_id)
