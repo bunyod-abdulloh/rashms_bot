@@ -8,7 +8,7 @@ from keyboards.inline.user import send_check_img
 from loader import dp, bot
 
 
-@dp.message_handler(F.data == "paid", state="*")
+@dp.callback_query_handler(F.data == "paid", state="*")
 async def h_paid_start(call: types.CallbackQuery, state: FSMContext):
     await state.finish()
 
