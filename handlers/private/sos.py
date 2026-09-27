@@ -33,13 +33,13 @@ async def h_sos_process(message: types.Message, state: FSMContext):
     elif message.content_type == "text":
         await bot.send_message(
             chat_id=ADMINS[0],
-            text=message.text
+            text=message.text,
+            reply_markup=user_sos_ikb(
+                telegram_id=telegram_id
+            )
         )
 
     await message.answer(
-        text="Xabaringiz adminga yuborildi! Tez orada javob qaytarishga harakat qilamiz!",
-        reply_markup=user_sos_ikb(
-            telegram_id=telegram_id
-        )
+        text="Xabaringiz adminga yuborildi! Tez orada javob qaytarishga harakat qilamiz!"
     )
     await state.finish()
