@@ -20,6 +20,10 @@ def user_main_ikb():
             callback_data="paid"
         ),
         InlineKeyboardButton(
+            text="📊 Tahlil",
+            callback_data="analysis"
+        ),
+        InlineKeyboardButton(
             text="✍️ Adminga murojaat",
             callback_data="sos"
         )

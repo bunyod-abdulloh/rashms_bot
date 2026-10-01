@@ -8,6 +8,7 @@ ADMINS = env.list("ADMINS")
 IP = env.str("IP")
 REDIS_PASS = env.str("REDIS_PASS")
 ADMIN_PANEL_URL = env.str("ADMIN_PANEL_URL")
+VOICE_CHAT_GROUP = env.str("VOICE_CHAT_GROUP")
 
 DB_USER = env.str("DB_USER")
 DB_PASS = env.str("DB_PASS")

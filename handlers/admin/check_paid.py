@@ -21,6 +21,7 @@ async def h_check_adm_paid(call: CallbackQuery, state: FSMContext, callback_data
     )
 
     try:
+
         await bot.send_message(
             chat_id=tg_id,
             text="To'lovingiz tasdiqlandi! Test javoblarini kiritishingiz mumkin!",
