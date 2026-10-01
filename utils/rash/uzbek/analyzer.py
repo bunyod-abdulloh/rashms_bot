@@ -292,11 +292,11 @@ async def analyze_results(test_code_id):
                 "teacher_id": teacher_id,
                 "t1": round(float(t1[i]), 1),
                 "t2": round(float(t2[i]), 1),
-                "rasch": score,
+                "rasch": float(score),
                 "percent": calc_percent(score),
                 "grade": grade,
             })
-    print(results)
+
     results = sorted(results, key=lambda x: x["full_name"] or "")
 
     await rdb.bulk_add_rash_results(results)
