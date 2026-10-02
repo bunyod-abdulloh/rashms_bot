@@ -11,13 +11,13 @@ async def h_rules_start(call: CallbackQuery, state: FSMContext):
     await state.finish()
 
     text = ("<b>⚠️ Javoblaringiz to‘g‘ri chiqishi uchun quyidagi qoidalarga amal qiling:</b>\n\n"
-            "🔹 <b>Yozma qismda matnlarni KATTA HARFLARDA kiriting</b>)\n\n"
+            "🔹 <b>Yozma qismda matnlarni KATTA HARFLARDA kiriting</b>\n\n"
             "🔹 <b>Qo‘shtirnoqni quyidagi ko‘rinishda kiriting: "
             "\"____\"</b>\n\n"
             "🔹 <b>Chiziqchalarni bo‘sh joy tashlamasdan yozing."
-            "Masalan:</b> <code>kamdan-kam</code>\n\n>"
+            "Masalan:</b> <code>kamdan-kam</code>\n\n"
             "<b>Tutuq belgisi ’, O‘, G‘ uchun ' belgisini ishlating</b>\n\n" 
-            "🔹 Esse ballni o'zingiz kiriting")
+            "🔹 <b>Esse ballni o'zingiz kiriting</b>")
     await call.message.edit_text(
         text=text,
         reply_markup=back_ikb()
