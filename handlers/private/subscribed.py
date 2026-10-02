@@ -7,7 +7,7 @@ from loader import dp, bot
 from utils.helpers import start_text
 
 
-@dp.callback_query_handler(F.data == "subscribe", state="*")
+@dp.callback_query_handler(F.data == "subscribed", state="*")
 async def h_subscribe_start(call: types.CallbackQuery, state: FSMContext):
     await state.finish()
 
