@@ -34,5 +34,5 @@ async def hstart_anketa_start(message: types.Message, state: FSMContext):
     await state.finish()
 
     await start_text(
-        message=message
+        event=message
     )

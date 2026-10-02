@@ -2,7 +2,8 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import CommandStart
 
-from loader import dp, udb, tchdb
+from data.config import CHANNEL
+from loader import dp, udb, tchdb, bot
 from utils.helpers import start_anketa, start_text
 
 
@@ -28,17 +29,42 @@ async def handle_start(message: types.Message, state: FSMContext):
             await message.answer(
                 text="Taklif havolasida xatolik bor! Ustozga murojaat qiling!"
             )
-            return
+            return None
 
     user = await udb.check_user(
         telegram_id=pupil_tg_id
     )
 
+    member = await bot.get_chat_member(
+        chat_id=CHANNEL, user_id=pupil_tg_id
+    )
+
+    allowed_statuses = ["member", "creator", "administrator"]
+
+    if member.status not in allowed_statuses:
+        kb = types.InlineKeyboardMarkup()
+        kb.add(
+            types.InlineKeyboardButton(
+                text="✅ Obunani tekshirish",
+                callback_data="subscribed"
+            )
+        )
+
+        return await message.answer(
+            text="Siz kanalimizga a'zo bo'lmadingiz! Botdan foydalanish uchun quyidagi kanalimizga obuna bo'lishingiz "
+                 "lozim!\n\n"
+                 "https://t.me/onatilirashms\n\n"
+                 "Agar obuna bo'lgan bo'lsangiz <b>Obunani tekshirish</b> tugmasini bosing",
+            reply_markup=kb
+        )
+
     if user:
         await start_text(
-            message=message
+            event=message
         )
+        return None
     else:
         await start_anketa(
             message=message, state=state
         )
+        return None
