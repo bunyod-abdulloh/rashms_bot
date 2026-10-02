@@ -4,6 +4,7 @@ from magic_filter import F
 
 from keyboards.inline.user import user_main_ikb, back_ikb
 from loader import dp
+from utils.helpers import txt
 
 
 @dp.callback_query_handler(F.data == "rules", state="*")
@@ -28,6 +29,6 @@ async def h_rules_start(call: CallbackQuery, state: FSMContext):
 async def h_back_main(call: CallbackQuery, state: FSMContext):
     await state.finish()
     await call.message.edit_text(
-        text="Bosh sahifa",
+        text=txt,
         reply_markup=user_main_ikb()
     )
