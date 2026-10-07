@@ -86,14 +86,13 @@ def to_T(theta):
 # 2) DARAJA / FOIZ
 # ==============================================================
 def calc_percent(score):
-    if score < 46:  return "--"
-    if score >= 70: return str(100)
-    if score >= 65: return str(round(score / 69.9 * 100, 1))
-    if score >= 60: return str(round(score / 64.9 * 100, 1))
-    if score >= 55: return str(round(score / 59.9 * 100, 1))
-    if score >= 50: return str(round(score / 54.9 * 100, 1))
-    if score >= 46: return str(round(score / 49.9 * 100, 1))
-    return None
+    if score < 46:
+        return "--"
+
+    if score >= 65:
+        return 100
+
+    return round(score / 65 * 100, 2)
 
 
 def calc_grade(score):
