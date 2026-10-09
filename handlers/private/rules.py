@@ -16,8 +16,9 @@ async def h_rules_start(call: CallbackQuery, state: FSMContext):
             "\"____\"</b>\n\n"
             "🔹 <b>Chiziqchalarni bo‘sh joy tashlamasdan yozing."
             "Masalan:</b> <code>kamdan-kam</code>\n\n"
-            "<b>Tutuq belgisi ’, O‘, G‘ uchun ' belgisini ishlating</b>\n\n" 
-            "🔹 <b>Esse ballni o'zingiz kiriting</b>")
+            "<b>Tutuq belgisi ’, O‘, G‘ uchun ' belgisini ishlating</b>\n\n"
+            "🔹 <b>Esse ballni o'zingiz kiriting</b>\n\n"
+            "🔹 <b>Bitta test javoblarini faqat bir marta botga yuborish mumkin</b>")
     await call.message.edit_text(
         text=text,
         reply_markup=back_ikb()
