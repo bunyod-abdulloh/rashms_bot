@@ -20,12 +20,13 @@ async def h_sos_start(call: types.CallbackQuery, state: FSMContext):
 @dp.message_handler(state="sos-user", content_types=["text", "photo"])
 async def h_sos_process(message: types.Message, state: FSMContext):
     telegram_id = message.from_user.id
+    hlink = f"<code>{telegram_id}</code>\n\n"
 
     if message.content_type == "photo":
         await bot.send_photo(
             chat_id=ADMINS[0],
             photo=message.photo[-1].file_id,
-            caption=message.caption,
+            caption=hlink + message.caption,
             reply_markup=user_sos_ikb(
                 telegram_id=telegram_id
             )
@@ -33,7 +34,7 @@ async def h_sos_process(message: types.Message, state: FSMContext):
     elif message.content_type == "text":
         await bot.send_message(
             chat_id=ADMINS[0],
-            text=message.text,
+            text=hlink + message.text,
             reply_markup=user_sos_ikb(
                 telegram_id=telegram_id
             )

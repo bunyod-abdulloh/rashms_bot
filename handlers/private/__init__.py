@@ -1,5 +1,6 @@
 from . import analysis
 from . import anketa
+from . import delete_answers
 from . import paid
 from . import rules
 from . import sos

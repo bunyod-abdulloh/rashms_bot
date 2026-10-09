@@ -173,3 +173,4 @@ class RashDB:
             WHERE rr.test_id = $2
             """
         return await self.db.fetch(sql, teacher_id, test_code_id)
+

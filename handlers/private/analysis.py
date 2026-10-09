@@ -5,7 +5,18 @@ from aiogram.types import CallbackQuery
 from magic_filter import F
 
 from data.config import VOICE_CHAT_GROUP
+from keyboards.inline.user import user_main_ikb
 from loader import dp, bot
+from utils.helpers import txt
+
+
+@dp.callback_query_handler(F.data == "back_main", state="*")
+async def h_back_main(call: CallbackQuery, state: FSMContext):
+    await state.finish()
+    await call.message.edit_text(
+        text=txt,
+        reply_markup=user_main_ikb()
+    )
 
 
 @dp.callback_query_handler(F.data == "analysis", state="*")

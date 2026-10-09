@@ -23,6 +23,10 @@ def user_main_ikb():
             text="📊 Tahlil",
             callback_data="analysis"
         ),
+        # InlineKeyboardButton(
+        #     text="❌ Javoblarni o'chirish",
+        #     callback_data="delete-answers"
+        # ),
         InlineKeyboardButton(
             text="✍️ Adminga murojaat",
             callback_data="sos"
