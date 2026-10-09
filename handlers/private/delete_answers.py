@@ -1,5 +1,6 @@
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, Message
+from magic_filter import F
 
 from keyboards.inline.user import back_ikb
 from loader import dp
