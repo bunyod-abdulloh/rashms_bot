@@ -18,5 +18,3 @@ async def h_delete_answers_start(call: CallbackQuery, state: FSMContext):
 @dp.message_handler(state="delete-answers", content_types=["text"])
 async def h_delete_answers_process(message: Message, state: FSMContext):
     test_code = message.text.strip().lower()
-
-    test_code_ = await
