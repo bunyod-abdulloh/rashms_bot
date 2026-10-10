@@ -28,6 +28,10 @@ def user_main_ikb():
         #     callback_data="delete-answers"
         # ),
         InlineKeyboardButton(
+            text="👤 Shaxsiy ma'lumotlar",
+            callback_data="profile"
+        ),
+        InlineKeyboardButton(
             text="✍️ Adminga murojaat",
             callback_data="sos"
         )
@@ -53,6 +57,21 @@ def send_check_img():
 def back_ikb():
     kb = InlineKeyboardMarkup(row_width=1)
     kb.add(
+        InlineKeyboardButton(
+            text="⬅️ Ortga",
+            callback_data="back_main"
+        )
+    )
+    return kb
+
+
+def edit_profile_ikb():
+    kb = InlineKeyboardMarkup(row_width=1)
+    kb.add(
+        InlineKeyboardButton(
+            text="📝 O'zgartirish",
+            callback_data="edit_profile"
+        ),
         InlineKeyboardButton(
             text="⬅️ Ortga",
             callback_data="back_main"

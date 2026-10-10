@@ -2,6 +2,7 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 
 from keyboards.inline.user import user_main_ikb
+from utils.txts import FULL_NAME_TEXT
 
 txt = ("📚 <b>Ona tili fanidan Milliy sertifikat testlari</b>\n\n"
        "Assalomu alaykum! 👋\n"
@@ -28,7 +29,7 @@ txt = ("📚 <b>Ona tili fanidan Milliy sertifikat testlari</b>\n\n"
 
 async def start_anketa(message: types.Message, state: FSMContext):
     await message.answer(
-        text="Ism sharifingizni kiriting"
+        text=FULL_NAME_TEXT
     )
     await state.set_state(
         "start_anketa"

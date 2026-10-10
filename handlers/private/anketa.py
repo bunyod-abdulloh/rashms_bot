@@ -5,6 +5,7 @@ from aiogram.dispatcher import FSMContext
 
 from loader import dp, appdb
 from utils.helpers import start_text
+from utils.txts import FULL_NAME_TEXT
 
 
 @dp.message_handler(state="start_anketa", content_types=['text'])
@@ -20,7 +21,7 @@ async def hstart_anketa_start(message: types.Message, state: FSMContext):
 
     if len(pupil_fullname) > 30:
         await message.answer(
-            text="Iltimos, ism sharifingizni kiriting"
+            text=FULL_NAME_TEXT
         )
         return
     data = await state.get_data()

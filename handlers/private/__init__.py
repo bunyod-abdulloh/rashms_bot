@@ -2,6 +2,8 @@ from . import analysis
 from . import anketa
 from . import delete_answers
 from . import paid
+from . import profil_main
+from . import profile_edit
 from . import rules
 from . import sos
 from . import start

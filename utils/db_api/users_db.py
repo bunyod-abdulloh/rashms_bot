@@ -16,6 +16,13 @@ class UsersDB:
             """
         return await self.db.fetchval(sql, telegram_id)
 
+    async def get_user(self, telegram_id):
+        sql = """
+              SELECT full_name
+              FROM users
+              WHERE telegram_id = $1 \
+              """
+        return await self.db.fetchrow(sql, telegram_id)
 
     async def get_users(self, limit=1000, offset=0):
         sql = """
@@ -43,6 +50,14 @@ class UsersDB:
         sql = "SELECT id, telegram_id, full_name, teacher_id FROM users"
         records = await self.db.fetch(sql)
         return {row["telegram_id"]: [row["full_name"], row['id'], row['teacher_id']] for row in records}
+
+    async def set_user_full_name(self, full_name, telegram_id):
+        sql = """
+              UPDATE users
+              SET full_name = $1
+              WHERE telegram_id = $2 \
+              """
+        await self.db.execute(sql, full_name, telegram_id)
 
     async def set_paid_true(self, tg_id):
         sql = """
